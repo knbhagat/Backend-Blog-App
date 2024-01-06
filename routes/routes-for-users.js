@@ -1,6 +1,7 @@
 import Express from 'express';
-import { getAllUsers } from '../controllers/controller-for-user';
+import { getAllUsers, signup } from '../controllers/controller-for-user'; //is it because its a function
 
 const router = Express.Router();
-router.get("/", getAllUsers);
+router.get("/", getAllUsers); 
+router.post("/signup", signup);
 export default router;

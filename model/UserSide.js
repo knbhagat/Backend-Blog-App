@@ -17,5 +17,6 @@ const userSchema = new Schema({
         minLength: 6
     }
 });
-export default mongoose.model("User", userSchema);
+let exportSchema = Mongoose.model("User", userSchema);
+export default exportSchema; //default makes it not an object?
 // will be stored as users in mongoDB
