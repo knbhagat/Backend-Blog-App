@@ -1,4 +1,5 @@
 import User from "../model/UserSide"; //Why cant i put User in curly brackets
+import Bcrypt from 'bcryptjs';
 
 export const getAllUsers = async(request,res,next) => {
     let users;
@@ -20,21 +21,39 @@ export const signup = async(request, response, next) => {
     try {
         definedUser = await User.findOne({email}); //only will find one record from the database, and use brackets because email is an object. findOne is looking for an object
     } catch (err) {
-        console.log(err);
+        return console.log(err);
     }
-    if (existingUser) {
-        return response.status(400).json({message : "User Already Exists! Choose to Log in"});
+    if (definedUser) {
+        return response.status(400).json({message : "User Already Exists! Choose to Log In"});
     }
-
+    const cryptPassword = Bcrypt.hashSync(password);
     const newUser = new User({ // is an object because of the brackers
         name,
         email,
-        password,
+        password : cryptPassword
     });
     try {
-        newUser.save(); //saves user to database
+        await newUser.save(); //saves user to database
     } catch (err) {
-        console.log(err);
+        return console.log(err);
     }
     return response.status(201).json({newUser});
+};
+
+export const login = async(req, res, next) => {
+    const { email, password} = req.body;
+    let loginUser;
+    try {
+        loginUser = await User.findOne({email});
+    } catch (err) {
+        return console.log(err);
+    }
+    if (!loginUser) {
+        return res.status(404).json({message : "No user exists under email. Choose to Sign Up"});
+    }
+    const correctPassword = Bcrypt.compareSync(password, loginUser.password);
+    if (!correctPassword) {
+        return res.status(400).json({message : "Incorrect Password under Email. Choose different Password"});
+    }
+    return res.status(200).json({message : "Login Successful!"});
 };
