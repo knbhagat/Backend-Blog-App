@@ -30,7 +30,8 @@ export const signup = async(request, response, next) => {
     const newUser = new User({ // is an object because of the brackers
         name,
         email,
-        password : cryptPassword
+        password : cryptPassword,
+        blogs : []
     });
     try {
         await newUser.save(); //saves user to database

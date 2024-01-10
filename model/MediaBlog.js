@@ -15,8 +15,9 @@ const blogSchema = new Schema({
         required : true
     },
     user : {
-        type : String,
+        type : Mongoose.Types.ObjectId,
+        ref : "User",
         required : true
     }
 });
-export default Mongoose.model("Media Blog", blogSchema);
+export default Mongoose.model("MediaBlog", blogSchema);
